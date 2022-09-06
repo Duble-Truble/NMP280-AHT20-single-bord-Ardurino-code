@@ -27,12 +27,14 @@
 
 Adafruit_AHTX0 aht;
 
+
 Adafruit_BMP280 bmp; // I2C
 //Adafruit_BMP280 bmp(BMP_CS); // hardware SPI
 //Adafruit_BMP280 bmp(BMP_CS, BMP_MOSI, BMP_MISO,  BMP_SCK);
-
+int LED_BUILTIN = 2;
 void setup() {
   Serial.begin(9600);
+  pinMode (LED_BUILTIN, OUTPUT);
   while ( !Serial ) delay(100);   // wait for native usb
   Serial.println(F("BMP280 test"));
   unsigned status;
@@ -65,19 +67,20 @@ void setup() {
 }
 
 void loop() {
+  
+ digitalWrite(LED_BUILTIN, HIGH);
  sensors_event_t humidity, temp;
  aht.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data
-  Serial.print("Temperature: "); Serial.print(temp.temperature); Serial.println(" degrees C");
-  Serial.print("Humidity: "); Serial.print(humidity.relative_humidity); Serial.println("% rH");
+    Serial.print("Temperature: "); Serial.print(temp.temperature); Serial.println(" degrees C");
+    Serial.print("Humidity: "); Serial.print(humidity.relative_humidity); Serial.println("% rH");
     Serial.print(F("Pressure = "));
     Serial.print(int(bmp.readPressure()/100 + 31.5)); /*change 31 into your exsact altitude / 10 to get hPa*/
     Serial.println(" hPa");
-
     Serial.print(F("Approx altitude = "));
     Serial.print(bmp.readAltitude(1013.25)+ 31.5); /* Adjusted to local forecast! */
     Serial.println(" m");
-
     Serial.println("*****************************************************************************");
     Serial.println("*****************************************************************************");
-    delay(2000);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(1000);
 }
